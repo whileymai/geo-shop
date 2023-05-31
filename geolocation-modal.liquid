@@ -1,0 +1,67 @@
+<div id="ProductModals"></div>
+
+<div  class="location_modal modal modal-padding" style="display:none">
+  <div class="location_modal--inner" role="dialog">
+    <button class="closeLocModal">
+      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" shape-rendering="geometricPrecision" class="h-6 w-6">
+        <path d="M18 6L6 18"></path><path d="M6 6l12 12"></path>
+      </svg>
+    </button>
+    <div class="outline-none focus-trap" tabindex="-1">
+      <form>
+        <div class="deliver-intro">
+          <h5 class="text-xl mb-4 w-4/5">
+            <span>Enter your delivery address</span>
+          </h5>
+          <p class="text-accents-7 mb-4 text-sm postcode-intro">
+            <span><small>We'll use this address to show products available to you</small></span>
+          </p>
+        </div>
+        <div class="delivery-body">
+          <label class="hidden visually-hidden">Search</label>
+          <div class="deliver-input">
+            <div class="relative text-sm bg-accents-1 text-base w-full transition-colors duration-150">
+              <input class="geo-loockup" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" placeholder="Enter a delivery address or suburb ..." class="AddressInput_input__1aumP" id="address_id" value="">
+            </div>
+          </div>
+          <div class="loader alert-info" style="display: none">Loading...</div>
+          <div class="listOfAddress"></div>
+          <button id="confirmLocation" style="display: none;" type="submit" name="confirm" class="btn btn--full confirm-location">
+            <span data-confirm-text="Confirm location">Confirm</span>
+          </button>
+          <div class="deliver-disclaimer">
+            <h6 class="disclaimer-title">We take privacy very seriously.</h6>
+            <p class="text-accents-7 mb-4 text-sm">
+              <span><small>We don't store addresses in our system until you place an order. We require a postcode to see if products can shipped to your area.</small></span>
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% if template == 'product' %}
+ <div class="available_location_modal modal modal-padding" style="display:none">
+  <div class="location_modal--inner" role="dialog">
+    <button class="closeLocModalPostcodes">
+      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" shape-rendering="geometricPrecision" class="h-6 w-6">
+        <path d="M18 6L6 18"></path><path d="M6 6l12 12"></path>
+      </svg>
+    </button>
+    <div class="outline-none focus-trap" tabindex="-1">
+        <div class="deliver-intro">
+          <h5 class="text-xl mb-4 w-4/5">
+            <span>Delivery Locations</span>
+          </h5>
+          <p class="text-accents-7 mb-4 text-sm postcode-intro">
+            {% if product.metafields.global.shipping_zones.value != blank %}
+             <span><small>Delivery only available for: {{ product.metafields.global.shipping_zones.value }}</small></span>
+            {% else %}
+             <span><small>Delivery available for all locations.</small></span>
+            {% endif %}
+          </p>
+        </div>
+    </div>
+  </div>
+</div> 
+{% endif %}
