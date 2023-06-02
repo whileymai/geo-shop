@@ -1,0 +1,54 @@
+<script>
+    (function($) {
+      $(document).on('ready page:load page:change', function() {
+        // var regex = /^.*p(.O.|o box|obox|o.box|ost office|ost box|arcel locker|arcel|arcell collect)/i;
+        var regex = /^.*p(o.box|obox|ost office|ost box|arcel locker|arcel|arcell collect)/i;//adapted validations 30 aug 2022
+
+        var fieldErrorClass = 'field--error';
+        var fieldErrorMessageSelector = '.field__message--error';
+        var errorText = '{{ 'general.shop.po_box_error' | t }}';
+        var $inputs = $("[data-step] [name='checkout[shipping_address][address1]'], [data-step] [name='checkout[shipping_address][address2]']");
+
+        var regexCheckFn = function(elem) {
+          var $current = $(elem);
+          var $parent = $current.closest('.field__input-wrapper');
+          var $field = $current.closest('.field');
+          if (regex.test($current.val())) {
+            if (!$field.hasClass(fieldErrorClass)) {
+              $field.addClass(fieldErrorClass);
+              $('button.step__footer__continue-btn').prop("disabled", true); // button is disabled.
+            }
+            if ($field.find(fieldErrorMessageSelector).length < 1) {
+              $parent.after("<p class='field__message field__message--error'>"+ errorText +"</p>");
+            }
+            return false;
+           } else {
+            if ($field.hasClass(fieldErrorClass)) {
+              $field.removeClass(fieldErrorClass);
+            }
+            if ($field.find(fieldErrorMessageSelector).length > 0) {
+              $field.find(fieldErrorMessageSelector).remove();
+              $('button.step__footer__continue-btn').prop("disabled", false); // button is enabled.
+            }
+            return true;
+          }
+        };
+
+        // Call regex check on form submit
+        $(document).on('submit', '[data-step] form', function() {
+          // default to true and will be set to false if there is an error to prevent form submission
+          var isValid = true;
+          $inputs.each(function() {
+            isValid = isValid && regexCheckFn($(this));
+          });
+          return isValid;
+        });
+
+        // Call regex check on blur
+        $inputs.blur(function() {
+          regexCheckFn($(this));
+        });
+
+      });
+    })(Checkout.$);
+  </script>
