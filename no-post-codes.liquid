@@ -1,0 +1,54 @@
+<script>
+    (function($) {
+      $(document).on('ready page:load page:change', function() {
+        var postcodeList = document.querySelector('.js-postcodes');
+        var postcode_no = postcodeList.dataset.postcode;
+        var regex = /0822|0852|0862|0872|0880|0881|0885|2464|2474|2469|2476|2477|2478|2878|2879|2898|2899|4025|4427|4470|4480|4481|4482|4486|4490|4492|4507|4581|4620|4678|4680|4700|4709|4730|4731|4757|4804|4807|4816|4823|4829|4830|4871|4872|4874|4875|4876|4890|4891|4892|4895|5204|5220|5221|5222|5223|5601|5690|6161|6434|6443|6701|6725|6728|6731|6799|7150|7255|7256|7257/i;
+        var fieldErrorClass = 'field--error';
+        var fieldErrorMessageSelector = '.field__message--error';
+        var errorText = '{{ 'general.shop.post_code_error' | t }}';
+        var $inputs = $("[data-step] [name='checkout[shipping_address][zip]']");
+
+        var regexCheckFn = function(elem) {
+          var $current = $(elem);
+          var $parent = $current.closest('.field__input-wrapper');
+          var $field = $current.closest('.field');
+          if (regex.test($current.val())) {
+            if (!$field.hasClass(fieldErrorClass)) {
+              $field.addClass(fieldErrorClass);
+              $('button.step__footer__continue-btn').prop("disabled", true); // button is disabled.
+            }
+            if ($field.find(fieldErrorMessageSelector).length < 1) {
+              $parent.after("<p class='field__message field__message--error'>"+ errorText +"</p>");
+            }
+            return false;
+           } else {
+            if ($field.hasClass(fieldErrorClass)) {
+              $field.removeClass(fieldErrorClass);
+            }
+            if ($field.find(fieldErrorMessageSelector).length > 0) {
+              $field.find(fieldErrorMessageSelector).remove();
+              $('button.step__footer__continue-btn').prop("disabled", false); // button is enabled.
+            }
+            return true;
+          }
+        };
+
+        // Call regex check on form submit
+        $(document).on('submit', '[data-step] form', function() {
+          // default to true and will be set to false if there is an error to prevent form submission
+          var isValid = true;
+          $inputs.each(function() {
+            isValid = isValid && regexCheckFn($(this));
+          });
+          return isValid;
+        });
+
+        // Call regex check on blur
+        $inputs.blur(function() {
+          regexCheckFn($(this));
+        });
+
+      });
+    })(Checkout.$);
+  </script>
